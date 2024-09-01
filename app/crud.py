@@ -1,4 +1,6 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.sql import Executable
 from .models import *
 from .schemas import *
 
@@ -67,7 +69,7 @@ def del_product(db: Session, name: str):
     return True
 
 
-def get_all_company_products(db: Session, company_id: int):
-    db_products = db.query(Product).filter(Product.company_id == company_id).all()
-    return db_products
-
+def paginate_company_products(db: Session, company_id: int, offset: int, limit: int) -> list[Product]:
+    statement: Executable = select(Product).filter(Product.company_id == company_id).offset(offset).limit(limit)
+    result: list[Product] = db.execute(statement).scalars().all()
+    return result

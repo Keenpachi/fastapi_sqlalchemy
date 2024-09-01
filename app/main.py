@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
-from typing import List
+from typing import Annotated
 from .crud import *
 from .database import SessionLocal, engine, Base
 from .schemas import *
@@ -80,10 +80,6 @@ def delete_product(name: str, db: Session = Depends(get_db)):
     return {"message": "Item deleted successfully"}
 
 
-@app.get("/company_products/{company_id}", response_model=List[ProductSchema])
-def get_product(company_id: int, db: Session = Depends(get_db)):
-    db_products = get_all_company_products(db, company_id=company_id)
-    if not db_products:
-        return []
-
-    return db_products
+@app.get("/company_products/")
+def get_company_products(db: Annotated[Session, Depends(get_db)], company_id: int, offset: int = 0, limit: int = 10):
+    return paginate_company_products(db, company_id, offset, limit)
