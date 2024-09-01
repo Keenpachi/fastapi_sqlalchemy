@@ -81,5 +81,5 @@ def delete_product(name: str, db: Session = Depends(get_db)):
 
 
 @app.get("/company_products/")
-def get_company_products(db: Annotated[Session, Depends(get_db)], company_id: int, offset: int = 0, limit: int = 10):
-    return paginate_company_products(db, company_id, offset, limit)
+def get_company_products(db: Annotated[Session, Depends(get_db)], company_id: int, page: int = 1, size: int = 10):
+    return paginate_company_products(db, company_id, page, size)

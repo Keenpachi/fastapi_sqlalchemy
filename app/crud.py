@@ -69,7 +69,7 @@ def del_product(db: Session, name: str):
     return True
 
 
-def paginate_company_products(db: Session, company_id: int, offset: int, limit: int) -> list[Product]:
-    statement: Executable = select(Product).filter(Product.company_id == company_id).offset(offset).limit(limit)
+def paginate_company_products(db: Session, company_id: int, page: int, size: int) -> list[Product]:
+    statement: Executable = select(Product).filter(Product.company_id == company_id).offset((page-1)*size).limit(size)
     result: list[Product] = db.execute(statement).scalars().all()
     return result
